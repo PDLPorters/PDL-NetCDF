@@ -1610,12 +1610,6 @@ sub put {
 
   barf "Cannot write read-only netCDF file $self->{FILENM}" if ($self->{WR} eq 'r');
 
-  if (defined $fillValue) {
-    $fillValue = PDL->zeroes($pdl->type, 1) + $fillValue
-      if !ref $fillValue; # make it a pdl
-    $self->putatt($fillValue, '_FillValue', $varnm);
-  }
-
   # Define dimensions if necessary
 
   my @dimlens = reverse $pdl->dims;
@@ -1676,6 +1670,14 @@ sub put {
     $self->{DATATYPES}{$varnm} = $datatype;
 
   }
+
+  # set _FillValue before data
+  if (defined $fillValue) {
+    $fillValue = PDL->zeroes($pdl->type, 1) + $fillValue
+      if !ref $fillValue; # make it a pdl
+    $self->putatt($fillValue, '_FillValue', $varnm);
+  }
+
 
   # Make PDL physical
   $pdl->make_physical;
