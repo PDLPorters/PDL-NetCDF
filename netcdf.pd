@@ -165,7 +165,7 @@ Create an object representing a netCDF file.
     netcdf-files. Even with this option the 'put' function will write
     variables in FORTRAN order (as before) and will reverse the
     dimension names so they fit this order.  With this option, the
-    'putslice' function will write varibles in the same way as 'put'.
+    'putslice' function will write variables in the same way as 'put'.
     You should use this option if your planning to work with other
     netcdf-programs (ncview, NCL) or if you are planning to combine
     putslice and slice.  You should _not_ use this option, if you need
@@ -359,7 +359,7 @@ Arguments:
 1) The name of the netCDF variable to fetch.  If this is the only
 argument, then the entire variable will be returned.
 
-To fetch a slice of the netCDF variable, optional 2nd and 3rd argments
+To fetch a slice of the netCDF variable, optional 2nd and 3rd arguments
 must be specified:
 
 2) A pdl which specifies the N dimensional starting point of the slice.
