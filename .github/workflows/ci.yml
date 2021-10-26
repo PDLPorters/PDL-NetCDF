@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: PDLPorters/devops/github-actions/irc-notifications@master
         with:
-          target-notifications: false # TODO
+          target-notifications: true
   ci:
     runs-on: ${{ matrix.os }}
     if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
@@ -46,7 +46,7 @@ jobs:
       - name: Install PDL dependencies
         uses: PDLPorters/devops/github-actions/install-dep-pdl-dep@master
       - name: Install NetCDF
-        uses: PDLPorters/devops/github-actions/install-dep-netcdf@gha-bulk-actions # TODO@master
+        uses: PDLPorters/devops/github-actions/install-dep-netcdf@master
       - name: Install Perl configure deps
         shell: bash
         run: |
@@ -70,5 +70,5 @@ jobs:
     steps:
       - uses: PDLPorters/devops/github-actions/irc-notifications@master
         with:
-          target-build-status: false # TODO
+          target-build-status: true
           needs: ${{ toJSON(needs) }}
