@@ -33,7 +33,7 @@ $obj->put ('recvart', ['dim2', 'chardim'], PDL::Char->new (['abc', 'def', 'hij']
 my $rec_id = $obj->setrec('recvar1', 'recvar2', 'recvart');
 $obj->putrec($rec_id, 1, [9, 8, 'foo']);
 my @rec = $obj->getrec($rec_id, 1);
-ok((($rec[0] == 9) && ($rec[1] == 8) && ($rec[2] eq 'foo')), "setrec/recput/recget OK");
+is_deeply \@rec, [9, 8, 'foo'], "setrec/recput/recget OK";
 
 eval { $obj->putrec($rec_id, 9, [9, 8, 'bar']) };
 like $@, qr/NetCDF: Index exceeds dimension bound/, "Correctly failed to put record with illegal index";
