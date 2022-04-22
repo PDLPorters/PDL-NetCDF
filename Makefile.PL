@@ -20,7 +20,7 @@ my %hash = pdlpp_stdargs($package);
 my %more_items = (
   AUTHOR       => 'Douglas Hunt (dhunt@ucar.edu)',
   PREREQ_PM => {
-    'PDL' => '2.043',
+    'PDL' => '2.019',
   },
   CONFIGURE_REQUIRES => {
     'Devel::CheckLib' => '1.14',
