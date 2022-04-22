@@ -5,6 +5,8 @@ our $VERSION = '4.23';
 pp_setversion($VERSION);
 
 my $ncversion = {nc_inq_var_deflate => check_lib(
+  INC  => $ENV{INC},
+  LIBS => $ENV{LIBS},
   header => 'netcdf.h', lib => 'netcdf',
   function => 'nc_inq_var_deflate(0, 0, NULL, NULL, NULL);',
 )};
