@@ -8,7 +8,7 @@ my $ncversion = {nc_inq_var_deflate => check_lib(
   INC  => $ENV{INC},
   LIBS => $ENV{LIBS},
   header => 'netcdf.h', lib => 'netcdf',
-  function => 'nc_inq_var_deflate(0, 0, NULL, NULL, NULL);',
+  function => 'return !nc_inq_var_deflate(0, 0, NULL, NULL, NULL);',
 )};
 
 pp_addpm({At => Top}, <<'EOD');
