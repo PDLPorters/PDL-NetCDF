@@ -25,7 +25,7 @@ my %more_items = (
   CONFIGURE_REQUIRES => {
     'Devel::CheckLib' => '1.14',
     'ExtUtils::MakeMaker' => '6.64', # TEST_REQUIRES
-    'PDL' => '2.043',
+    'PDL' => '2.019',
   },
   BUILD_REQUIRES => {
     'Devel::CheckLib' => '1.14',

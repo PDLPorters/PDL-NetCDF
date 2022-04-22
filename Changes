@@ -1,3 +1,5 @@
+- change required PDL version to 2.019
+
 4.23 2022-01-13
 - fix to work with PDL 2.066
 - spelling fixes - thanks @sebastic
