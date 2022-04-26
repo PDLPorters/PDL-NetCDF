@@ -26,6 +26,10 @@ my $in1 = pdl [[1,2,3], [4,5,6]];
 $obj->put ('var1', ['dim1', 'dim2'], $in1);
 my $out1 = $obj->get ('var1');
 
+ok (($out1 == $in1)->sum == $in1->nelem, 'Read in correctly');
+my $out_byte = $obj->get ('var1', {FETCH_AS => PDL::byte->[0]});
+ok ((($out_byte == $in1)->sum == $out1->nelem && $out_byte->type == PDL::byte), 'Read in correctly as new type');
+
 # Test record putting
 $obj->put ('recvar1', ['dim2'], double ([1,2,3]));
 $obj->put ('recvar2', ['dim2'], long   ([1,2,3]));
@@ -202,7 +206,7 @@ for ('abc', 'defg', 'hijkl') {
 }
 $charout = $obj->get('char_unlim');
 $pdlchar = PDL::Char->new (['abc', 'defg', 'hijkl']);
-print $charout, "\n";
+# print $charout, "\n";
 ok (sum($pdlchar - $charout) == 0, "chars with unlimited dimension");
 
 my $charout1 = $obj->get('char_unlim', [0,0], [3, $strlen]);

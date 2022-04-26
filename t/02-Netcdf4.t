@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use PDL::Lite ();
 use PDL::NetCDF;
+use Data::Dumper;
+END   { note( "Removing test file $_\n" ), unlink foreach grep -e, qw/ foo.nc / }
 
 my $isNetCDF = PDL::NetCDF::isNetcdf4();
 isnt $isNetCDF, undef, "isNetcdf4 function defined";
@@ -18,7 +20,7 @@ SKIP: {
     isa_ok($nc4, 'PDL::NetCDF');
     is ($nc4->getFormat, PDL::NetCDF::NC_FORMAT_NETCDF4, "foo.nc4 is netcdf4");
     is($nc4->getatt('text_attribute'), "Text Attribute");
-    print Dumper($nc4->{VARIDS});
+    # print Dumper($nc4->{VARIDS});
     my ($deflate, $shuffle) = $nc4->getDeflateShuffle('var1');
     is($deflate, 0, 'uncompressed variable');
     is($shuffle, 0, 'unshuffled variable');
@@ -71,6 +73,15 @@ SKIP: {
     ok(($pOut->isbad)->sum == 1, "default fill-value detected in nc");
 
     unlink $bar if -f $bar;
-}
 
+    # Test writing and reading the new string attribute
+    unlink "foo.nc" if -f "foo.nc";
+    $nc = PDL::NetCDF->new (">foo.nc");
+    my $in1 = PDL->pdl([[1,2,3], [4,5,6]]);
+    $nc->put ('var1', ['dim1', 'dim2'], $in1);
+    $nc->putatt(['string1', 'another_string'], 'string_attr', 'var1'); # Put two strings as attributes to 'var1'
+    my $strattr = $nc->getatt('string_attr', 'var1');
+    ok($strattr->[0] eq 'string1' && $strattr->[1] eq 'another_string', "Put/get string attribute");
+    $nc->close();
+}
 done_testing;
