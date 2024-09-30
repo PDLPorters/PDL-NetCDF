@@ -4,8 +4,10 @@ use PDL::Core::Dev;            # Pick up development utilities
 use ExtUtils::MakeMaker;
 use Devel::CheckLib qw(check_lib);
 
+my %pathpars = find_macos_pars();
 check_lib(
   header => 'netcdf.h', lib => 'netcdf',
+  %pathpars,
 ) or die "Cannot find netcdf library. Please install NetCDF.";
 
 # Check if compiled under gcc/Linux.  In which case, define bool for the compiler
@@ -49,6 +51,16 @@ my %more_items = (
 %hash = (%hash, %more_items);
 $hash{INC} .= " $define_bool" if $define_bool;
 $hash{LIBS}[0] .= " -lnetcdf";
+$hash{INC} .= qq{ "-I$pathpars{incpath}"} if %pathpars;
+$hash{LIBS}[0] .= (%pathpars ? qq{ "-L$pathpars{libpath}"} : '')." -lnetcdf";
 WriteMakefile(%hash);
 
 sub MY::postamble { pdlpp_postamble($package); }
+
+sub find_macos_pars {
+  return if $^O ne 'darwin';
+  my $pref = `brew --prefix netcdf`;
+  return if !$pref;
+  chomp $pref;
+  (libpath=>"$pref/lib", incpath=>"$pref/include");
+}
