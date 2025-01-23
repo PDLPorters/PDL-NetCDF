@@ -4,12 +4,6 @@ use PDL::Core::Dev;            # Pick up development utilities
 use ExtUtils::MakeMaker;
 use Devel::CheckLib qw(check_lib);
 
-my %pathpars = find_macos_pars();
-check_lib(
-  header => 'netcdf.h', lib => 'netcdf',
-  %pathpars,
-) or die "Cannot find netcdf library. Please install NetCDF.";
-
 # Check if compiled under gcc/Linux.  In which case, define bool for the compiler
 my $define_bool = '';
 if ($^O =~ /linux/) {
@@ -50,17 +44,22 @@ my %more_items = (
 );
 %hash = (%hash, %more_items);
 $hash{INC} .= " $define_bool" if $define_bool;
-$hash{LIBS}[0] .= " -lnetcdf";
-$hash{INC} .= qq{ "-I$pathpars{incpath}"} if %pathpars;
-$hash{LIBS}[0] .= (%pathpars ? qq{ "-L$pathpars{libpath}"} : '')." -lnetcdf";
+
+if (check_lib( header => 'netcdf.h', lib => 'netcdf',)) {
+  $hash{LIBS}[0] .= " -lnetcdf";
+}
+elsif (qx{which nc-config 2> /dev/null}) {
+  warn "Could not find NetCDF libraries using check_lib, falling back to nc-config ...\n";
+  my $inc = qx/nc-config --cflags/;
+  chomp $inc;
+  $hash{INC} .= " $inc";
+  my $libs = qx/nc-config --libs/;
+  $hash{LIBS}[0] .= $libs;
+}
+else {
+  die "Cannot find NetCDF libraries, tried check_lib and looked for nc-config. Please install NetCDF.";
+}
+
 WriteMakefile(%hash);
 
 sub MY::postamble { pdlpp_postamble($package); }
-
-sub find_macos_pars {
-  return if $^O ne 'darwin';
-  my $pref = `brew --prefix netcdf`;
-  return if !$pref;
-  chomp $pref;
-  (libpath=>"$pref/lib", incpath=>"$pref/include");
-}
